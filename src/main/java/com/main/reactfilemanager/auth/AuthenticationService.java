@@ -32,7 +32,7 @@ public class AuthenticationService {
     public ResponseEntity<Map<String, Object>> register(RegisterRequest request) {
         boolean isExist = userRepository.findByEmail(request.getEmail()).isPresent();
         if(isExist) {
-            return ResponseEntity.status(200).body(Map.of(
+            return ResponseEntity.status(403).body(Map.of(
                     "success", false,
                     "message", "email already exists"
             ));
@@ -47,7 +47,7 @@ public class AuthenticationService {
         userRepository.save(user);
         var token = jwtService.generateToken(user.getEmail());
 
-        return ResponseEntity.status(200).body(Map.of(
+        return ResponseEntity.status(201).body(Map.of(
                 "success", true,
                 "user", user,
                 "token", token
@@ -62,7 +62,7 @@ public class AuthenticationService {
             );
         }
         catch(Exception e) {
-            return ResponseEntity.status(200).body(Map.of(
+            return ResponseEntity.status(401).body(Map.of(
                     "success", false,
                     "message", "invalid credential"
             ));
@@ -73,7 +73,6 @@ public class AuthenticationService {
 
         return ResponseEntity.status(200).body(Map.of(
                 "success", true,
-                "user", user,
                 "token", token
         ));
     }

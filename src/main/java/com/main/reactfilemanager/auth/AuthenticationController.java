@@ -28,4 +28,6 @@ public class AuthenticationController {
     public ResponseEntity<Map<String, Object>> authenticate(@RequestBody AuthenticateRequest request) {
         return authenticationService.authenticate(request);
     }
+
+//    @PostMapping("/logout") TODO
 }
