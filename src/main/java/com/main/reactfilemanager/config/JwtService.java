@@ -3,6 +3,7 @@ package com.main.reactfilemanager.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.websocket.Decoder;
@@ -18,6 +19,15 @@ import java.util.function.Function;
 public class JwtService {
 
     private final static String SECRET_KEY = "C609D6E3F58BDE1AA94A6B7BC7C49FAF9E27DC83B770503C3A74C4D6C6231EB2";
+
+    public String generateToken(String subject) {
+        return Jwts.builder()
+                .setSubject(subject)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000  * 60 * 60 * 24 * 5))
+                .compact();
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
