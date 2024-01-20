@@ -1,4 +1,4 @@
-package com.main.reactfilemanager.file;
+package com.main.reactfilemanager.model.requestModel.file;
 
 
 import lombok.AllArgsConstructor;

@@ -1,13 +1,12 @@
 package com.main.reactfilemanager.file;
 
 
+import com.main.reactfilemanager.model.requestModel.file.FileRenameRequest;
+import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
 import com.main.reactfilemanager.user.User;
 import com.main.reactfilemanager.user.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,6 @@ public class FileService {
         var userEmail = authentication.getName();
         User user = userRepository.findByEmail(userEmail).get();
 
-
         var file = new File(
                 request.getName(),
                 request.getUrl(),
@@ -36,14 +34,32 @@ public class FileService {
                 request.getSize(),
                 new Date(System.currentTimeMillis()),
                 user.id,
-                request.getFolder().toString()
+                request.getFolder()
         );
+
         fileRepository.insert(file);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "file", file,
                 "user", user
+        ));
+    }
+
+    public ResponseEntity<Map<String, Object>> deleteFile(String id) {
+        fileRepository.deleteById(id);
+        return ResponseEntity.ok(Map.of(
+                "success", true
+        ));
+    }
+
+    public ResponseEntity<Map<String, Object>> renameFile(String id, FileRenameRequest request) {
+        var file = fileRepository.findById(id).get();
+        file.setName(request.getName());
+        fileRepository.save(file);
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "file", file
         ));
     }
 }

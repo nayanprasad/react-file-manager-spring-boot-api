@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -22,9 +23,9 @@ public class File {
     private Number size;
     private Date createdAt;
     private Long owner;   // user id
-    private String folder; // folder id
+    private ObjectId folder; // folder id
 
-    public File(String name, String url, String type, Number size, Date createdAt, Long owner, String folder) {
+    public File(String name, String url, String type, Number size, Date createdAt, Long owner, ObjectId folder) {
         this.name = name;
         this.url = url;
         this.type = type;

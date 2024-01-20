@@ -1,6 +1,8 @@
 package com.main.reactfilemanager.auth;
 
 
+import com.main.reactfilemanager.model.requestModel.auth.AuthenticateRequest;
+import com.main.reactfilemanager.model.requestModel.auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

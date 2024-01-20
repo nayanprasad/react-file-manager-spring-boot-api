@@ -1,7 +1,8 @@
 package com.main.reactfilemanager.file;
 
 
-import jakarta.persistence.GeneratedValue;
+import com.main.reactfilemanager.model.requestModel.file.FileRenameRequest;
+import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,4 +25,16 @@ public class FileController {
     public ResponseEntity<Map<String, Object>> upload(@RequestBody FileUploadRequest request) {
         return fileService.upload(request);
     }
+
+    @DeleteMapping("/file/{fileId}")
+    public ResponseEntity<Map<String, Object>> deleteFile(@PathVariable("fileId") String id) {
+        return fileService.deleteFile(id);
+    }
+
+    @PatchMapping("/file/{fileId}")
+    public ResponseEntity<Map<String, Object>> rename(@PathVariable("fileId") String id, @RequestBody FileRenameRequest request) {
+        return fileService.renameFile(id, request);
+    }
+
+//    @PutMapping("/file/move/{fileId}")  TODO
 }

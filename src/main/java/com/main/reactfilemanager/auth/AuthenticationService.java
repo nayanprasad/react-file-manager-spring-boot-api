@@ -2,9 +2,10 @@ package com.main.reactfilemanager.auth;
 
 
 import com.main.reactfilemanager.config.JwtService;
+import com.main.reactfilemanager.model.requestModel.auth.AuthenticateRequest;
+import com.main.reactfilemanager.model.requestModel.auth.RegisterRequest;
 import com.main.reactfilemanager.user.User;
 import com.main.reactfilemanager.user.UserRepository;
-import jakarta.websocket.OnClose;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,4 +1,4 @@
-package com.main.reactfilemanager.auth;
+package com.main.reactfilemanager.model.requestModel.auth;
 
 
 import lombok.AllArgsConstructor;
@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
-    private String name;
+public class AuthenticateRequest {
     private String email;
     private String password;
 }
