@@ -16,5 +16,5 @@ public class FileUploadRequest {
     private String url;
     private String type;
     private Number size;
-    private ObjectId folder; // folder id
+    private String folder; // folder id
 }

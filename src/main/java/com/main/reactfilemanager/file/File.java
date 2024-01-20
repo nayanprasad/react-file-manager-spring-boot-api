@@ -23,9 +23,9 @@ public class File {
     private Number size;
     private Date createdAt;
     private Long owner;   // user id
-    private ObjectId folder; // folder id
+    private String folder; // folder id
 
-    public File(String name, String url, String type, Number size, Date createdAt, Long owner, ObjectId folder) {
+    public File(String name, String url, String type, Number size, Date createdAt, Long owner, String folder) {
         this.name = name;
         this.url = url;
         this.type = type;

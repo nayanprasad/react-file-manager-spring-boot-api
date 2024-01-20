@@ -6,6 +6,7 @@ import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
 import com.main.reactfilemanager.user.User;
 import com.main.reactfilemanager.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,13 @@ public class FileService {
     }
 
     public ResponseEntity<Map<String, Object>> deleteFile(String id) {
+        boolean exists = fileRepository.existsById(id);
+        if (!exists) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "file doesn't exist"
+            ));
+        }
         fileRepository.deleteById(id);
         return ResponseEntity.ok(Map.of(
                 "success", true
@@ -54,6 +62,13 @@ public class FileService {
     }
 
     public ResponseEntity<Map<String, Object>> renameFile(String id, FileRenameRequest request) {
+        boolean exists = fileRepository.existsById(id);
+        if (!exists) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "file doesn't exist"
+            ));
+        }
         var file = fileRepository.findById(id).get();
         file.setName(request.getName());
         fileRepository.save(file);
