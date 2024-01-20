@@ -6,10 +6,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.websocket.Decoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Base64;
+import java.util.Date;
 import java.util.function.Function;
 
 @Service
@@ -34,5 +36,18 @@ public class JwtService {
     private Key getSigningKey() {
         byte[] key = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(key);
+    }
+
+    public Boolean validateToken(String token, UserDetails user) {
+        String tokenUserName = extractUsername(token);
+        return (tokenUserName.equals(user.getUsername()) && !isTokenExpired(token));
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return  extractClaim(token, Claims::getExpiration);
     }
 }
