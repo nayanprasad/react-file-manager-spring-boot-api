@@ -6,6 +6,7 @@ import com.main.reactfilemanager.folder.FolderRepository;
 import com.main.reactfilemanager.folder.FolderService;
 import com.main.reactfilemanager.model.requestModel.file.FileRenameRequest;
 import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
+import com.main.reactfilemanager.model.requestModel.file.MoveFileRequest;
 import com.main.reactfilemanager.user.User;
 import com.main.reactfilemanager.user.UserRepository;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -115,5 +117,36 @@ public class FileService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userEmail = authentication.getName();
         return userRepository.findByEmail(userEmail).get();
+    }
+
+    public ResponseEntity<Map<String, Object>> moveFolder(String id, MoveFileRequest request) {
+        File file = fileRepository.findById(id).orElse(null);
+        if (file == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "File not found"));
+        }
+
+        User user = getAuthenticatedUser();
+        if (!Objects.equals(file.getOwner(), user.getId())) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "You are not the owner of this file"));
+        }
+
+        Folder folder = folderRepository.findById(request.getFolder()).orElse(null);
+        if (folder == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Folder not found"));
+        }
+
+        File updatedFile = fileRepository.findById(id).get();
+        updatedFile.setFolder(folder.getId());
+        fileRepository.save(updatedFile);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "File moved successfully"));
     }
 }

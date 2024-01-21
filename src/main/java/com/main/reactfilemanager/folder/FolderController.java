@@ -41,7 +41,7 @@ public class FolderController {
     }
 
     @GetMapping("/folders")
-    public ResponseEntity<Object> getFolderHierarchy() {
+    public ResponseEntity<?> getFolderHierarchy() {
         return folderService.getFolderHierarchy();
     }
 }

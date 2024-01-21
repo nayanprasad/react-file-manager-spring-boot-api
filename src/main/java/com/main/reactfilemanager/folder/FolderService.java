@@ -39,16 +39,22 @@ public class FolderService {
 
     public ResponseEntity<Map<String, Object>> createFolder(CreateFolderRequest request) {
         if (request.getName() == null || request.getName().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Folder name is required"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Folder name is required"));
         }
 
         if (request.getParent() == null || request.getParent().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Parent folder id is required"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Parent folder id is required"));
         }
 
         Folder parentFolder = folderRepository.findById(request.getParent()).orElse(null);
         if (parentFolder == null) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Parent folder not found"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Parent folder not found"));
         }
 
         Folder folder = new Folder(request.getName(), parentFolder.getId(), parentFolder.getOwner());
@@ -57,18 +63,24 @@ public class FolderService {
         parentFolder.getFolders().add(folder.getId());
         folderRepository.save(parentFolder);
 
-        return ResponseEntity.ok(Map.of("success", true, "message", "Folder created successfully"));
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Folder created successfully"));
     }
 
     public ResponseEntity<Map<String, Object>> getFolderDatas(String id) {
         Folder folder = folderRepository.findById(id).orElse(null);
         if (folder == null) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Folder not found"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Folder not found"));
         }
 
         User user = getAuthenticatedUser();
         if (!Objects.equals(folder.getOwner(), user.getId())) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "You are not authorized to access this folder"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "You are not authorized to access this folder"));
         }
 
 //        L file = fileRepository.findByFolder(folder.getId());
@@ -102,22 +114,30 @@ public class FolderService {
     public ResponseEntity<Map<String, Object>> deleteFolder(String id) {
         Folder folder = folderRepository.findById(id).orElse(null);
         if (folder == null) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Folder not found"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Folder not found"));
         }
 
         User user = getAuthenticatedUser();
         if (!Objects.equals(folder.getOwner(), user.getId())) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "You are not authorized to delete this folder"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "You are not authorized to delete this folder"));
         }
 
         if (Objects.equals(folder.getName(), "root")) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Root folder cannot be deleted"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Root folder cannot be deleted"));
         }
 
         Folder parentFolder = folderRepository.findById(folder.getParent()).orElse(null);
 
         if (parentFolder == null) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Parent folder not found"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Parent folder not found"));
         }
 
         parentFolder.getFolders().remove(folder.getId());
@@ -125,32 +145,48 @@ public class FolderService {
 
         folderRepository.delete(folder);
 
-        return ResponseEntity.ok(Map.of("success", true, "message", "Folder deleted successfully"));
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Folder deleted successfully"));
     }
 
     public ResponseEntity<Map<String, Object>> renameFolder(String id, CreateFolderRequest request) {
         Folder folder = folderRepository.findById(id).orElse(null);
         if (folder == null) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Folder not found"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Folder not found"));
         }
 
         User user = getAuthenticatedUser();
         if (!Objects.equals(folder.getOwner(), user.getId())) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "You are not authorized to rename this folder"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "You are not authorized to rename this folder"
+            ));
         }
 
         if (Objects.equals(folder.getName(), "root")) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Root folder cannot be renamed"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false, "message",
+                    "Root folder cannot be renamed"
+            ));
         }
 
         if (request.getName() == null || request.getName().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Folder name is required"));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Folder name is required"
+            ));
         }
 
         folder.setName(request.getName());
         folderRepository.save(folder);
 
-        return ResponseEntity.ok(Map.of("success", true, "message", "Folder renamed successfully"));
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Folder renamed successfully"
+        ));
     }
 
     public ResponseEntity<Map<String, Object>> getRootFolderDatas() {
@@ -175,7 +211,7 @@ public class FolderService {
                 .collect(Collectors.toList());
     }
 
-    public ResponseEntity<Object> getFolderHierarchy() {
+    public ResponseEntity<?> getFolderHierarchy() {
         User user = getAuthenticatedUser();
         List<FolderDto> folderStructure = buildFolderHierarchy(null, user.getId());
         return ResponseEntity.ok(folderStructure);

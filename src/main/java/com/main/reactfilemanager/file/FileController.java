@@ -3,6 +3,7 @@ package com.main.reactfilemanager.file;
 
 import com.main.reactfilemanager.model.requestModel.file.FileRenameRequest;
 import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
+import com.main.reactfilemanager.model.requestModel.file.MoveFileRequest;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +38,9 @@ public class FileController {
         return fileService.renameFile(id, request);
     }
 
-//    @PutMapping("/file/move/{fileId}")  TODO
+    @PutMapping("/file/move/{folderId}")
+    public ResponseEntity<Map<String, Object>> moveFolder(@PathVariable("folderId") String id, @RequestBody MoveFileRequest request) {
+        System.out.println("id: " + id);
+        return fileService.moveFolder(id, request);
+    }
 }
