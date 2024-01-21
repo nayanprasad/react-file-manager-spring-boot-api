@@ -2,6 +2,8 @@ package com.main.reactfilemanager.auth;
 
 
 import com.main.reactfilemanager.config.JwtService;
+import com.main.reactfilemanager.folder.Folder;
+import com.main.reactfilemanager.folder.FolderRepository;
 import com.main.reactfilemanager.model.requestModel.auth.AuthenticateRequest;
 import com.main.reactfilemanager.model.requestModel.auth.RegisterRequest;
 import com.main.reactfilemanager.user.User;
@@ -21,14 +23,11 @@ import java.util.Map;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final FolderRepository folderRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-
-//    public AuthenticationService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
 
     public ResponseEntity<Map<String, Object>> register(RegisterRequest request) {
         boolean isExist = userRepository.findByEmail(request.getEmail()).isPresent();
@@ -47,6 +46,9 @@ public class AuthenticationService {
                 .build();
         userRepository.save(user);
         var token = jwtService.generateToken(user.getEmail());
+
+        var rootFolder = new Folder("root", null, user.getId());
+        folderRepository.save(rootFolder);
 
         return ResponseEntity.status(201).body(Map.of(
                 "success", true,
