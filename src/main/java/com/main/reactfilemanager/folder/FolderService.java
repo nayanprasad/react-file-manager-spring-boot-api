@@ -1,6 +1,7 @@
 package com.main.reactfilemanager.folder;
 
 
+import com.main.reactfilemanager.dto.FolderDto;
 import com.main.reactfilemanager.file.File;
 import com.main.reactfilemanager.file.FileRepository;
 import com.main.reactfilemanager.model.requestModel.folder.CreateFolderRequest;
@@ -11,9 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +27,14 @@ public class FolderService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userEmail = authentication.getName();
         return userRepository.findByEmail(userEmail).get();
+    }
+
+    private Map<String, Object> createFolderMap(Folder folder) {
+        Map<String, Object> folderMap = new HashMap<>();
+        folderMap.put("_id", folder.getId());
+        folderMap.put("name", folder.getName());
+        folderMap.put("parent", folder.getParent());
+        return folderMap;
     }
 
     public ResponseEntity<Map<String, Object>> createFolder(CreateFolderRequest request) {
@@ -67,7 +75,28 @@ public class FolderService {
         Iterable<File> files = fileRepository.findByFolder(folder.getId());
         Iterable<Folder> folders = folderRepository.findByParent(folder.getId());
 
-        return ResponseEntity.ok(Map.of("success", true, "folders", folders, "files", files));
+        List<Map<String, Object>> ancestorList = new ArrayList<>();
+        ancestorList.add(createFolderMap(folder));
+
+        String parent = folder.getParent();
+        while (parent != null) {
+            Folder parentFolder = folderRepository.findById(parent).orElse(null);
+            if (parentFolder == null) {
+                break; // Stop if parent folder not found
+            }
+
+            ancestorList.add(createFolderMap(parentFolder));
+            parent = parentFolder.getParent();
+        }
+
+        Collections.reverse(ancestorList);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "folders", folders,
+                "files", files,
+                "ancestors", ancestorList
+        ));
     }
 
     public ResponseEntity<Map<String, Object>> deleteFolder(String id) {
@@ -131,7 +160,24 @@ public class FolderService {
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "folders", folder
+                "folder", folder
         ));
+    }
+
+    private List<FolderDto> buildFolderHierarchy(String parent, Long userId) {
+        List<Folder> folders = folderRepository.findByParentAndOwner(parent, userId);
+        return folders.stream()
+                .map(folder -> new FolderDto(
+                        folder.getId(),
+                        folder.getName(),
+                        folder.getParent(),
+                        buildFolderHierarchy(folder.getId(), userId)))
+                .collect(Collectors.toList());
+    }
+
+    public ResponseEntity<Object> getFolderHierarchy() {
+        User user = getAuthenticatedUser();
+        List<FolderDto> folderStructure = buildFolderHierarchy(null, user.getId());
+        return ResponseEntity.ok(folderStructure);
     }
 }

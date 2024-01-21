@@ -40,5 +40,8 @@ public class FolderController {
         return folderService.renameFolder(id, request);
     }
 
-//    @GetMapping("/folders")  TODO : to get folder hierarchy
+    @GetMapping("/folders")
+    public ResponseEntity<Object> getFolderHierarchy() {
+        return folderService.getFolderHierarchy();
+    }
 }
