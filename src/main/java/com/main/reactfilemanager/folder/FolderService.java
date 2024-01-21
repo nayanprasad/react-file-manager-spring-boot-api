@@ -83,7 +83,6 @@ public class FolderService {
                     "message", "You are not authorized to access this folder"));
         }
 
-//        L file = fileRepository.findByFolder(folder.getId());
         Iterable<File> files = fileRepository.findByFolder(folder.getId());
         Iterable<Folder> folders = folderRepository.findByParent(folder.getId());
 
@@ -94,7 +93,7 @@ public class FolderService {
         while (parent != null) {
             Folder parentFolder = folderRepository.findById(parent).orElse(null);
             if (parentFolder == null) {
-                break; // Stop if parent folder not found
+                break;
             }
 
             ancestorList.add(createFolderMap(parentFolder));

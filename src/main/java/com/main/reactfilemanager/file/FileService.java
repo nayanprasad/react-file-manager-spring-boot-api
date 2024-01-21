@@ -3,14 +3,12 @@ package com.main.reactfilemanager.file;
 
 import com.main.reactfilemanager.folder.Folder;
 import com.main.reactfilemanager.folder.FolderRepository;
-import com.main.reactfilemanager.folder.FolderService;
 import com.main.reactfilemanager.model.requestModel.file.FileRenameRequest;
 import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
 import com.main.reactfilemanager.model.requestModel.file.MoveFileRequest;
 import com.main.reactfilemanager.user.User;
 import com.main.reactfilemanager.user.UserRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

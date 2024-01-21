@@ -5,7 +5,6 @@ import com.main.reactfilemanager.model.requestModel.file.FileRenameRequest;
 import com.main.reactfilemanager.model.requestModel.file.FileUploadRequest;
 import com.main.reactfilemanager.model.requestModel.file.MoveFileRequest;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
