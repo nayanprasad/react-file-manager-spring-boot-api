@@ -24,4 +24,21 @@ public class FolderController {
     public ResponseEntity<Map<String, Object>> getFolderDatas(@PathVariable("folderId") String id) {
         return folderService.getFolderDatas(id);
     }
+
+    @GetMapping("/folder")
+    public ResponseEntity<Map<String, Object>> getRootFolderDatas() {
+        return folderService.getRootFolderDatas();
+    }
+
+    @DeleteMapping("/folder/{folderId}")
+    public ResponseEntity<Map<String, Object>> deleteFolder(@PathVariable("folderId") String id) {
+        return folderService.deleteFolder(id);
+    }
+
+    @PatchMapping("/folder/{folderId}")
+    public ResponseEntity<Map<String, Object>> renameFolder(@PathVariable("folderId") String id, @RequestBody CreateFolderRequest request) {
+        return folderService.renameFolder(id, request);
+    }
+
+//    @GetMapping("/folders")  TODO : to get folder hierarchy
 }

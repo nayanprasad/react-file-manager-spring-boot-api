@@ -35,4 +35,7 @@ public class Folder {
     public Collection<String> getFolders() {
         return folders;
     }
+    public Collection<String> getFiles() {
+        return files;
+    }
 }
