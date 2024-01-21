@@ -76,7 +76,8 @@ public class AuthenticationService {
 
         return ResponseEntity.status(200).body(Map.of(
                 "success", true,
-                "token", token
+                "token", token,
+                "user", user
         ));
     }
 }

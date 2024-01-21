@@ -1,6 +1,8 @@
 package com.main.reactfilemanager.folder;
 
 
+import com.main.reactfilemanager.file.File;
+import com.main.reactfilemanager.file.FileRepository;
 import com.main.reactfilemanager.model.requestModel.folder.CreateFolderRequest;
 import com.main.reactfilemanager.user.User;
 import com.main.reactfilemanager.user.UserRepository;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class FolderService {
 
     private final FolderRepository folderRepository;
+    private final FileRepository fileRepository;
     private final UserRepository userRepository;
 
     private User getAuthenticatedUser() {
@@ -60,7 +63,11 @@ public class FolderService {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", "You are not authorized to access this folder"));
         }
 
-        return ResponseEntity.ok(Map.of("success", true, "folder", folder));
+//        L file = fileRepository.findByFolder(folder.getId());
+        Iterable<File> files = fileRepository.findByFolder(folder.getId());
+        Iterable<Folder> folders = folderRepository.findByParent(folder.getId());
+
+        return ResponseEntity.ok(Map.of("success", true, "folders", folders, "files", files));
     }
 
     public ResponseEntity<Map<String, Object>> deleteFolder(String id) {
@@ -120,8 +127,11 @@ public class FolderService {
     public ResponseEntity<Map<String, Object>> getRootFolderDatas() {
 
         User user = getAuthenticatedUser();
-        Optional<Folder> rootFolder = folderRepository.findByOwnerAndName(user.getId(), "root");
+        Folder folder = folderRepository.findByOwnerAndName(user.getId(), "root").iterator().next();
 
-        return ResponseEntity.ok(Map.of("success", true, "folder", rootFolder.get()));
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "folders", folder
+        ));
     }
 }
