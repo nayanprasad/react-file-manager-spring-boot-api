@@ -80,4 +80,11 @@ public class AuthenticationService {
                 "user", user
         ));
     }
+
+    public ResponseEntity<Map<String, Object>> logout() {
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "logout successfully"
+        ));
+    }
 }

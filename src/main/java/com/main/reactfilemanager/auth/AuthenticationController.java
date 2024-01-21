@@ -31,5 +31,9 @@ public class AuthenticationController {
         return authenticationService.authenticate(request);
     }
 
-//    @PostMapping("/logout") TODO
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout() {
+        // In a stateless JWT system, there is no server-side logout logic. The client should handle logout by discarding or invalidating the token.
+        return authenticationService.logout();
+    }
 }
