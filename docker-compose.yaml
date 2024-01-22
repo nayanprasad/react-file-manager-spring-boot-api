@@ -13,6 +13,8 @@ services:
         POSTGRES_USER: nayan
         POSTGRES_PASSWORD: 12345
         POSTGRES_DB: reactfilemanager
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
   mongo:
     image: mongo
     container_name: mongodb
@@ -24,6 +26,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+        - ./data/mongo-data:/data/db
   api:
     container_name: react-file-manager
     restart: unless-stopped
