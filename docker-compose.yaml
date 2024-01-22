@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15.4
+    container_name: postgres
+    restart: always
+    networks:
+      - shared-network
+    ports:
+        - 5439:5432
+    environment:
+        POSTGRES_USER: nayan
+        POSTGRES_PASSWORD: 12345
+        POSTGRES_DB: reactfilemanager
+  mongo:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    networks:
+      - shared-network
+    ports:
+      - 27019:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+  api:
+    container_name: react-file-manager
+    restart: unless-stopped
+    build:
+        context: .
+        dockerfile: Dockerfile
+    networks:
+      - shared-network
+    ports:
+      - 8080:8080
+    environment:
+        POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/reactfilemanager
+        MONGO_DB_URL: mongodb://mongo:27017/reactfilemanager
+    depends_on:
+      - postgres
+      - mongo
+
+networks:
+    shared-network:
